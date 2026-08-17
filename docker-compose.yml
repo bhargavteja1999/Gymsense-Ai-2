@@ -9,9 +9,9 @@ services:
       dockerfile: Dockerfile
 
     environment:
-      DATABASE_URL: postgresql+psycopg://gymsense:gymsense@postgres:5432/gymsense
-      CORS_ORIGINS: http://localhost:8080
-      ENVIRONMENT: production-like
+      DATABASE_URL: "postgresql+psycopg://gymsense:gymsense@postgres:5432/gymsense"
+      CORS_ORIGINS: "http://localhost:8080"
+      ENVIRONMENT: "production-like"
       APP_VERSION: "0.1.0"
 
     ports:
@@ -50,9 +50,9 @@ services:
     image: postgres:17-alpine
 
     environment:
-      POSTGRES_USER: gymsense
-      POSTGRES_PASSWORD: gymsense
-      POSTGRES_DB: gymsense
+      POSTGRES_USER: "gymsense"
+      POSTGRES_PASSWORD: "gymsense"
+      POSTGRES_DB: "gymsense"
 
     volumes:
       - pgdata:/var/lib/postgresql/data
