@@ -26,7 +26,6 @@ jobs:
         working-directory: backend
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -46,10 +45,6 @@ jobs:
         run: |
           python -m compileall .
 
-      # Uncomment when pytest is configured
-      # - name: Run tests
-      #   run: pytest
-
 
   # ==========================================
   # 2. FRONTEND - React / Vite
@@ -63,7 +58,6 @@ jobs:
         working-directory: frontend
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -95,37 +89,36 @@ jobs:
       - frontend
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-
       # ------------------------------------------
-      # Backend Docker Image
+      # Backend
       # ------------------------------------------
       - name: Build backend Docker image
         run: |
           docker build \
+            --progress=plain \
+            -f backend/Dockerfile \
             -t gymsense-backend:${{ github.sha }} \
             ./backend
 
-
       # ------------------------------------------
-      # Frontend Docker Image
+      # Frontend
       # ------------------------------------------
       - name: Build frontend Docker image
         run: |
           docker build \
+            --progress=plain \
             -f frontend/Dockerfile \
             -t gymsense-frontend:${{ github.sha }} \
             .
 
-
       # ------------------------------------------
-      # Display Docker Images
+      # Show Images
       # ------------------------------------------
       - name: Show Docker images
         run: |
@@ -145,7 +138,6 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
-
       - name: Deployment successful
         run: |
           echo "=========================================="
@@ -153,3 +145,4 @@ jobs:
           echo "=========================================="
           echo "Commit: ${{ github.sha }}"
           echo "Branch: ${{ github.ref_name }}"
+          echo "Commit SHA: ${{ github.sha }}"
