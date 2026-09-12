@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPoseDetector } from './ai/poseService'
 import { ExerciseEngine } from './ai/exerciseEngine'
 import { POSE_CONNECTIONS } from './ai/geometry'
-import { saveWorkout, getWorkouts, type WorkoutSessionItem } from './services/api'
+import { getWorkouts, type WorkoutSessionItem } from './services/api'
 import type { Exercise, CoachingResult } from './types'
 
 const engine = new ExerciseEngine()
@@ -23,7 +23,6 @@ export default function App() {
   const [feedback, setFeedback] = useState('Position yourself in full view of the camera.')
   const [result, setResult] = useState<CoachingResult | null>(null)
   const [reps, setReps] = useState(0)
-  const [isSaving, setIsSaving] = useState(false)
   const [history, setHistory] = useState<WorkoutSessionItem[]>([])
   const [isDemo, setIsDemo] = useState(false)
 
@@ -258,26 +257,6 @@ export default function App() {
     ctx.shadowBlur = 0
   }
 
-  async function finishWorkout() {
-    setIsSaving(true)
-    try {
-      await saveWorkout({
-        user_id: 'demo-user',
-        exercise,
-        reps,
-        average_score: result?.score ?? 0,
-        feedback: result?.feedback ?? feedback,
-      })
-      setFeedback('Workout saved successfully to local database.')
-      await loadHistory()
-    } catch (e) {
-      console.error(e)
-      setFeedback('Workout saved locally (backend server connection offline).')
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
   function changeExercise(value: Exercise) {
     stop()
     engine.reset()
@@ -324,9 +303,6 @@ export default function App() {
             </button>
             <button className="btn btn-danger" onClick={stop}>
               ⏹ Stop
-            </button>
-            <button className="btn btn-accent" onClick={finishWorkout} disabled={isSaving}>
-              {isSaving ? 'Saving…' : '💾 Save Workout'}
             </button>
           </div>
         </div>
